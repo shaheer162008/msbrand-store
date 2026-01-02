@@ -57,6 +57,25 @@ body.dashboard {
   letter-spacing: -0.04em;
 }
 
+.font-900 {
+  font-weight: 900;
+}
+
+/* ====== PRODUCT CARD STYLES ====== */
+.product-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px -15px rgba(255, 214, 0, 0.2);
+}
+
+.product-card:hover .add-to-cart {
+  bottom: 12px;
+  opacity: 1;
+}
+
 /* ====== PRELOADER STYLES ====== */
 #preloader {
   position: fixed;
