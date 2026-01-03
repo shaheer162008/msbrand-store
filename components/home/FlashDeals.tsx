@@ -59,35 +59,44 @@ export default function FlashDeals() {
   ];
 
   return (
-    <section className="mt-28 max-w-[1440px] mx-auto px-8">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
-        <div className="flex items-center gap-8">
-          <h2 className="text-4xl font-900 uppercase italic tracking-tighter">
-            <i className="fa-solid fa-bolt-lightning text-brand mr-4"></i>Flash Deals
-          </h2>
-          <div className="flex gap-3">
-            <div className="bg-black text-brand px-4 py-2 rounded-xl font-black text-xl">
-              {String(time.hours).padStart(2, '0')}
-            </div>
-            <span className="text-2xl font-black">:</span>
-            <div className="bg-black text-brand px-4 py-2 rounded-xl font-black text-xl">
-              {String(time.minutes).padStart(2, '0')}
-            </div>
-            <span className="text-2xl font-black">:</span>
-            <div className="bg-black text-brand px-4 py-2 rounded-xl font-black text-xl">
-              {String(time.seconds).padStart(2, '0')}
+    <section className="mt-10 sm:mt-14 md:mt-18 lg:mt-28 w-full px-3 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto">
+        {/* Flash Deals Header - Centered */}
+        <div className="flex flex-col items-center gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-12">
+          {/* Title and Timer Section */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-900 uppercase italic tracking-tighter whitespace-nowrap flex items-center gap-2 sm:gap-3 md:gap-4">
+              <i className="fa-solid fa-bolt-lightning text-brand text-2xl sm:text-3xl md:text-4xl"></i>Flash Deals
+            </h2>
+            
+            {/* Timer */}
+            <div className="flex gap-1.5 sm:gap-2 md:gap-3 items-center">
+              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
+                {String(time.hours).padStart(2, '0')}
+              </div>
+              <span className="text-lg sm:text-2xl md:text-3xl font-black">:</span>
+              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
+                {String(time.minutes).padStart(2, '0')}
+              </div>
+              <span className="text-lg sm:text-2xl md:text-3xl font-black">:</span>
+              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
+                {String(time.seconds).padStart(2, '0')}
+              </div>
             </div>
           </div>
+          
+          {/* View All Button */}
+          <button className="text-[8px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.3em] bg-slate-100 hover:bg-brand text-black px-6 sm:px-8 md:px-10 py-2 sm:py-2.5 md:py-3 rounded-full transition whitespace-nowrap">
+            View All Drops
+          </button>
         </div>
-        <button className="text-xs font-black uppercase tracking-[0.3em] bg-slate-100 px-8 py-3 rounded-full hover:bg-brand transition">
-          View All Drops
-        </button>
-      </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-        {products.map((product, index) => (
-          <ProductCard key={index} {...product} />
-        ))}
+        {/* Products Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4 lg:gap-6">
+          {products.map((product, index) => (
+            <ProductCard key={index} {...product} />
+          ))}
+        </div>
       </div>
     </section>
   );

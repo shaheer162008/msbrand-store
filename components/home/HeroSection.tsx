@@ -79,24 +79,24 @@ const HeroSection: React.FC = () => {
   }, [currentIndex]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="relative overflow-hidden rounded-xl">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <div className="relative overflow-hidden rounded-lg sm:rounded-xl">
         <div
           ref={carouselRef}
           className="flex transition-transform duration-700 ease-in-out"
         >
           {slides.map((slide) => (
             <div key={slide.id} className="min-w-full">
-              <div className="relative aspect-[2/1] sm:aspect-[21/9] overflow-hidden">
+              <div className="relative aspect-video sm:aspect-[21/9] overflow-hidden">
                 <img
                   src={slide.image}
                   alt={slide.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
-                  <div className="absolute bottom-0 p-6">
-                    <h2 className="text-3xl font-bold text-white">{slide.title}</h2>
-                    <p className="text-gray-200 mt-1 max-w-xl">{slide.description}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6">
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-white">{slide.title}</h2>
+                    <p className="text-gray-200 mt-1 sm:mt-2 max-w-xl text-xs sm:text-sm md:text-base">{slide.description}</p>
                   </div>
                 </div>
               </div>

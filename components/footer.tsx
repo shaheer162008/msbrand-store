@@ -4,68 +4,84 @@ import React from 'react'
 
 const Footer = () => {
   return (
-    <footer style={{ backgroundColor: '#000', color: 'white', paddingTop: '128px', paddingBottom: '64px', paddingLeft: '32px', paddingRight: '32px', marginTop: '128px', borderTop: '8px solid #FFD600' }}>
-      <div style={{ maxWidth: '1440px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '80px', marginBottom: '128px' }}>
-          <div style={{ gridColumn: 'span 5' }}>
-            <div style={{ fontSize: '32px', fontWeight: 900, letterSpacing: '-0.04em', textTransform: 'uppercase', marginBottom: '32px', fontStyle: 'italic' }}>
+    <footer className="bg-black text-white pt-16 sm:pt-20 md:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 mt-16 sm:mt-20 md:mt-32 border-t-4 md:border-t-8" style={{ borderColor: '#FFD600' }}>
+      <div className="max-w-[1440px] mx-auto">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12 md:gap-16 lg:gap-20 mb-12 sm:mb-16 md:mb-20 lg:mb-32">
+          {/* Brand Section */}
+          <div className="lg:col-span-5">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-900 tracking-tighter uppercase mb-6 sm:mb-8 italic">
               MS BRAND <span style={{ color: '#FFD600' }}>STORE.</span>
             </div>
-            <p style={{ color: '#71717a', fontWeight: 'bold', lineHeight: '1.8', maxWidth: '400px' }}>
+            <p className="text-slate-500 font-bold leading-relaxed max-w-sm text-sm sm:text-base">
               The world's most versatile marketplace. We deliver whatever you need, wherever you are.
             </p>
-            <div style={{ display: 'flex', gap: '16px', marginTop: '32px' }}>
-              <div style={{ width: '48px', height: '48px', backgroundColor: '#27272a', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FFD600'; e.currentTarget.style.color = '#000'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#27272a'; e.currentTarget.style.color = 'white'; }}>
-                <i className="fa-brands fa-facebook-f" style={{ fontSize: '20px' }}></i>
-              </div>
-              <div style={{ width: '48px', height: '48px', backgroundColor: '#27272a', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FFD600'; e.currentTarget.style.color = '#000'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#27272a'; e.currentTarget.style.color = 'white'; }}>
-                <i className="fa-brands fa-instagram" style={{ fontSize: '20px' }}></i>
-              </div>
-              <div style={{ width: '48px', height: '48px', backgroundColor: '#27272a', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FFD600'; e.currentTarget.style.color = '#000'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#27272a'; e.currentTarget.style.color = 'white'; }}>
-                <i className="fa-brands fa-whatsapp" style={{ fontSize: '20px' }}></i>
-              </div>
+            {/* Social Icons */}
+            <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8">
+              <button className="w-10 sm:w-12 h-10 sm:h-12 bg-zinc-900 rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-brand hover:text-black transition cursor-pointer">
+                <i className="fa-brands fa-facebook-f text-base sm:text-lg md:text-xl"></i>
+              </button>
+              <button className="w-10 sm:w-12 h-10 sm:h-12 bg-zinc-900 rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-brand hover:text-black transition cursor-pointer">
+                <i className="fa-brands fa-instagram text-base sm:text-lg md:text-xl"></i>
+              </button>
+              <button className="w-10 sm:w-12 h-10 sm:h-12 bg-zinc-900 rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-brand hover:text-black transition cursor-pointer">
+                <i className="fa-brands fa-whatsapp text-base sm:text-lg md:text-xl"></i>
+              </button>
             </div>
           </div>
-          <div style={{ gridColumn: 'span 7', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '48px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <h5 style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#52525b' }}>Shopping</h5>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Daily Food</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Electronics</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Pharmacy</a>
+
+          {/* Links Section */}
+          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
+            {/* Shopping */}
+            <div className="flex flex-col gap-4 sm:gap-6">
+              <h5 className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-zinc-600">Shopping</h5>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Daily Food</a>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Electronics</a>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Pharmacy</a>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <h5 style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#52525b' }}>Company</h5>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Become a Partner</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Careers</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 'bold', color: 'white', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>Safety Hub</a>
+
+            {/* Company */}
+            <div className="flex flex-col gap-4 sm:gap-6">
+              <h5 className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-zinc-600">Company</h5>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Become a Partner</a>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Careers</a>
+              <a href="#" className="text-xs sm:text-sm font-bold hover:text-brand transition">Safety Hub</a>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <h5 style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#52525b' }}>Download</h5>
-              <div style={{ backgroundColor: '#27272a', padding: '16px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#000'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#27272a'; e.currentTarget.style.color = 'white'; }}>
-                <i className="fa-brands fa-apple" style={{ fontSize: '24px' }}></i>
-                <div>
-                  <p style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', opacity: 0.6 }}>App Store</p>
-                  <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}>iOS Mobile</p>
+
+            {/* Download */}
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <h5 className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-zinc-600">Download</h5>
+              
+              {/* iOS App */}
+              <button className="bg-zinc-900 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-white hover:text-black transition">
+                <i className="fa-brands fa-apple text-lg sm:text-2xl flex-shrink-0"></i>
+                <div className="text-left">
+                  <p className="text-[7px] sm:text-[8px] font-black uppercase opacity-60">App Store</p>
+                  <p className="text-[8px] sm:text-[10px] font-black uppercase">iOS Mobile</p>
                 </div>
-              </div>
-              <div style={{ backgroundColor: '#27272a', padding: '16px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#000'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#27272a'; e.currentTarget.style.color = 'white'; }}>
-                <i className="fa-brands fa-google-play" style={{ fontSize: '20px' }}></i>
-                <div>
-                  <p style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', opacity: 0.6 }}>Play Store</p>
-                  <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}>Android App</p>
+              </button>
+
+              {/* Android App */}
+              <button className="bg-zinc-900 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-white hover:text-black transition">
+                <i className="fa-brands fa-google-play text-lg sm:text-xl flex-shrink-0"></i>
+                <div className="text-left">
+                  <p className="text-[7px] sm:text-[8px] font-black uppercase opacity-60">Play Store</p>
+                  <p className="text-[8px] sm:text-[10px] font-black uppercase">Android App</p>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', paddingTop: '48px', borderTop: '1px solid #27272a', gap: '32px' }}>
-          <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#52525b' }}>
+
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-8 sm:pt-10 md:pt-12 border-t border-zinc-900 gap-6 sm:gap-8">
+          <span className="text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-700 text-center md:text-left">
             © 2025 MS BRAND STORE. ALL SYSTEM PROTOCOLS SECURE.
           </span>
-          <div style={{ display: 'flex', gap: '48px', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#52525b' }}>
-            <a href="#" style={{ color: '#52525b', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = '#52525b'}>Privacy</a>
-            <a href="#" style={{ color: '#52525b', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = '#52525b'}>Terms</a>
-            <a href="#" style={{ color: '#52525b', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = '#FFD600'} onMouseLeave={(e) => e.currentTarget.style.color = '#52525b'}>Cookies</a>
+          <div className="flex gap-6 sm:gap-10 md:gap-12 text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-700">
+            <a href="#" className="hover:text-brand transition">Privacy</a>
+            <a href="#" className="hover:text-brand transition">Terms</a>
+            <a href="#" className="hover:text-brand transition">Cookies</a>
           </div>
         </div>
       </div>
