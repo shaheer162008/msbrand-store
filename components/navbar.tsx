@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import Search from './search';
 
-export default function Navbar() {
+interface NavbarProps {
+  cartCount?: number;
+}
+
+export default function Navbar({ cartCount = 0 }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -72,7 +76,9 @@ export default function Navbar() {
                 </a>
                 <button className="relative flex items-center justify-center gap-1 text-[8px] lg:text-[11px] font-black uppercase text-slate-600 hover:text-black transition">
                   <i className="fa-solid fa-shopping-cart text-sm"></i>
-                  <span className="absolute -top-2.5 -right-1 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[6px] font-black">0</span>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2.5 -right-1 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[6px] font-black">{cartCount}</span>
+                  )}
                 </button>
               </div>
 
@@ -94,7 +100,9 @@ export default function Navbar() {
             {/* Mobile Cart - Only visible on sm to lg */}
             <button className="flex lg:hidden relative items-center justify-center w-8 sm:w-9 h-8 sm:h-9 rounded-lg hover:bg-slate-100 transition flex-shrink-0">
               <i className="fa-solid fa-shopping-cart text-base sm:text-lg"></i>
-              <span className="absolute -top-2 -right-1.5 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-black">0</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-1.5 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-black">{cartCount}</span>
+              )}
             </button>
 
             {/* Mobile Menu Button */}
