@@ -38,8 +38,14 @@ export const storage = getStorage(app);
 
 // Initialize Cloud Messaging (if supported)
 let messaging = null;
-if (typeof window !== 'undefined' && isSupported()) {
-  messaging = getMessaging(app);
+if (typeof window !== 'undefined') {
+  isSupported().then((supported) => {
+    if (supported) {
+      messaging = getMessaging(app);
+    }
+  }).catch(() => {
+    // Messaging not supported
+  });
 }
 export { messaging };
 
