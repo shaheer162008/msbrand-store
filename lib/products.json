@@ -1,0 +1,816 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Biryani Combo Pack",
+      "category": "food",
+      "price": 450,
+      "discountedPrice": 350,
+      "image": "https://images.unsplash.com/photo-1589985643453-a8f97cba8791?w=500&h=500&fit=crop",
+      "description": "Delicious basmati rice biryani with succulent chicken pieces and aromatic spices",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "22%",
+        "couponCode": "BIRYANI50"
+      },
+      "topics": [
+        {
+          "name": "Spice Level",
+          "options": ["Mild", "Medium", "Hot"]
+        },
+        {
+          "name": "Rice Type",
+          "options": ["Basmati", "Jasmine"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1589985643453-a8f97cba8791?w=500&h=500&fit=crop",
+        "https://images.unsplash.com/photo-1617093332080-51e6b8476e75?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Chicken Karahi",
+      "category": "food",
+      "price": 380,
+      "discountedPrice": 299,
+      "image": "https://images.unsplash.com/photo-1612874742237-415c69bb0d42?w=500&h=500&fit=crop",
+      "description": "Tender chicken cooked with fresh tomatoes, peppers, and traditional spices",
+      "inStock": true,
+      "rating": 4.3,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "21%",
+        "couponCode": "KARAHI40"
+      },
+      "topics": [
+        {
+          "name": "Portion Size",
+          "options": ["Single", "Double", "Family Pack"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1612874742237-415c69bb0d42?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "BBQ Grilled Chicken",
+      "category": "food",
+      "price": 320,
+      "discountedPrice": 249,
+      "image": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=500&h=500&fit=crop",
+      "description": "Smoky BBQ grilled chicken with special sauce and herbs",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "22%",
+        "couponCode": "BBQ30"
+      },
+      "topics": [
+        {
+          "name": "Marination",
+          "options": ["Classic BBQ", "Smoky", "Spicy BBQ"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Fried Rice Special",
+      "category": "food",
+      "price": 280,
+      "discountedPrice": 220,
+      "image": "https://images.unsplash.com/photo-1571407970349-bc7e343641ec?w=500&h=500&fit=crop",
+      "description": "Fluffy fried rice with chicken, egg, and vegetables",
+      "inStock": true,
+      "rating": 4.2,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Protein",
+          "options": ["Chicken", "Shrimp", "Vegetarian", "Mixed"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1571407970349-bc7e343641ec?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Shawarma Wrap",
+      "category": "food",
+      "price": 200,
+      "discountedPrice": 150,
+      "image": "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop",
+      "description": "Succulent shawarma meat wrapped in soft pita bread with tahini sauce",
+      "inStock": true,
+      "rating": 4.4,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "25%",
+        "couponCode": "WRAP25"
+      },
+      "topics": [
+        {
+          "name": "Meat Type",
+          "options": ["Chicken", "Beef"]
+        },
+        {
+          "name": "Extra Toppings",
+          "options": ["Garlic Sauce", "Hot Sauce", "Both"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Biryani Rice Special",
+      "category": "food",
+      "price": 420,
+      "discountedPrice": 320,
+      "image": "https://images.unsplash.com/photo-1545521521-88ffe38326a9?w=500&h=500&fit=crop",
+      "description": "Premium basmati biryani with meat, boiled eggs, and exotic spices",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "24%",
+        "couponCode": "PREMIUM20"
+      },
+      "topics": [
+        {
+          "name": "Meat Choice",
+          "options": ["Chicken", "Mutton", "Beef"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1545521521-88ffe38326a9?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Pepperoni Pizza Large",
+      "category": "food",
+      "price": 550,
+      "discountedPrice": 420,
+      "image": "https://images.unsplash.com/photo-1628840042765-356cda07f4ee?w=500&h=500&fit=crop",
+      "description": "Large pizza topped with pepperoni, cheese, and fresh tomato sauce",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "24%",
+        "couponCode": "PIZZA50"
+      },
+      "topics": [
+        {
+          "name": "Crust Type",
+          "options": ["Thin Crust", "Thick Crust", "Stuffed Crust"]
+        },
+        {
+          "name": "Extra Cheese",
+          "options": ["No", "Yes (+50)"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1628840042765-356cda07f4ee?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Grilled Fish Fillet",
+      "category": "food",
+      "price": 480,
+      "discountedPrice": 380,
+      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=500&fit=crop",
+      "description": "Fresh grilled fish fillet with lemon and herbs",
+      "inStock": true,
+      "rating": 4.8,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "21%",
+        "couponCode": "FISH20"
+      },
+      "topics": [
+        {
+          "name": "Fish Type",
+          "options": ["Salmon", "Tilapia", "Cod"]
+        },
+        {
+          "name": "Cooking Style",
+          "options": ["Grilled", "Fried"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Butter Chicken with Naan",
+      "category": "food",
+      "price": 400,
+      "discountedPrice": 310,
+      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=500&fit=crop",
+      "description": "Creamy butter chicken curry served with soft naan bread",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Spice Level",
+          "options": ["Mild", "Medium", "Hot"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Chicken Tikka Masala",
+      "category": "food",
+      "price": 390,
+      "discountedPrice": 299,
+      "image": "https://images.unsplash.com/photo-1565557623814-695d2c33fbd0?w=500&h=500&fit=crop",
+      "description": "Juicy chicken tikka in aromatic creamy tomato sauce",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "23%",
+        "couponCode": "TIKKA30"
+      },
+      "topics": [
+        {
+          "name": "Serving Size",
+          "options": ["Half", "Full", "Double"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1565557623814-695d2c33fbd0?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Fresh Milk (1L)",
+      "category": "grocery",
+      "price": 150,
+      "discountedPrice": 140,
+      "image": "https://images.unsplash.com/photo-1550583902-537c9e7a90f8?w=500&h=500&fit=crop",
+      "description": "Fresh pasteurized milk from local dairy farms",
+      "inStock": true,
+      "rating": 4.3,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Type",
+          "options": ["Full Fat", "Low Fat", "Skimmed"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1550583902-537c9e7a90f8?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Wheat Flour (2kg)",
+      "category": "grocery",
+      "price": 280,
+      "discountedPrice": 240,
+      "image": "https://images.unsplash.com/photo-1585647347385-4b5b1e36b61b?w=500&h=500&fit=crop",
+      "description": "Premium quality wheat flour for baking and cooking",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "14%",
+        "couponCode": "FLOUR20"
+      },
+      "topics": [
+        {
+          "name": "Grade",
+          "options": ["Standard", "Premium", "Organic"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1585647347385-4b5b1e36b61b?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Organic Vegetables Pack",
+      "category": "grocery",
+      "price": 350,
+      "discountedPrice": 280,
+      "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=500&fit=crop",
+      "description": "Fresh organic vegetables including tomato, onion, cucumber, and carrots",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "20%",
+        "couponCode": "VEGGIE30"
+      },
+      "topics": [
+        {
+          "name": "Vegetables Included",
+          "options": ["Mixed", "Green Only", "Root Vegetables"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Rice (5kg)",
+      "category": "grocery",
+      "price": 650,
+      "discountedPrice": 580,
+      "image": "https://images.unsplash.com/photo-1586985289688-cacf913bb194?w=500&h=500&fit=crop",
+      "description": "Quality basmati rice perfect for everyday cooking",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "11%",
+        "couponCode": "RICE50"
+      },
+      "topics": [
+        {
+          "name": "Rice Type",
+          "options": ["Basmati", "Jasmine", "Brown"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1586985289688-cacf913bb194?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Cooking Oil (1L)",
+      "category": "grocery",
+      "price": 280,
+      "discountedPrice": 240,
+      "image": "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop",
+      "description": "Premium cooking oil suitable for all cooking methods",
+      "inStock": true,
+      "rating": 4.4,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Oil Type",
+          "options": ["Sunflower", "Canola", "Olive"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Spices Mix Pack",
+      "category": "grocery",
+      "price": 320,
+      "discountedPrice": 250,
+      "image": "https://images.unsplash.com/photo-1596040402050-1d6dbe2d1055?w=500&h=500&fit=crop",
+      "description": "Essential spices mix including turmeric, cumin, coriander, and garam masala",
+      "inStock": true,
+      "rating": 4.8,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "22%",
+        "couponCode": "SPICE30"
+      },
+      "topics": [
+        {
+          "name": "Spice Pack",
+          "options": ["Basic Mix", "Premium Mix", "Hot Mix"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1596040402050-1d6dbe2d1055?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Sugar (1kg)",
+      "category": "grocery",
+      "price": 120,
+      "discountedPrice": 100,
+      "image": "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop",
+      "description": "Refined granulated sugar for sweetening and baking",
+      "inStock": true,
+      "rating": 4.2,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Sugar Type",
+          "options": ["White", "Brown"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1599599810694-f3379ca3a67f?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Tea Leaves (500g)",
+      "category": "grocery",
+      "price": 380,
+      "discountedPrice": 320,
+      "image": "https://images.unsplash.com/photo-1597318247057-11d842ae3a92?w=500&h=500&fit=crop",
+      "description": "Premium quality tea leaves for aromatic tea experience",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "16%",
+        "couponCode": "TEA30"
+      },
+      "topics": [
+        {
+          "name": "Tea Type",
+          "options": ["Black Tea", "Green Tea", "Herbal Mix"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1597318247057-11d842ae3a92?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Butter (500g)",
+      "category": "grocery",
+      "price": 420,
+      "discountedPrice": 380,
+      "image": "https://images.unsplash.com/photo-1535521066927-ab7c9ab60908?w=500&h=500&fit=crop",
+      "description": "Fresh creamy butter for cooking and baking",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Butter Type",
+          "options": ["Salted", "Unsalted"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1535521066927-ab7c9ab60908?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Eggs (12 Pack)",
+      "category": "grocery",
+      "price": 280,
+      "discountedPrice": 240,
+      "image": "https://images.unsplash.com/photo-1585203566316-033bafbc9d3e?w=500&h=500&fit=crop",
+      "description": "Fresh farm eggs rich in nutrients",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "14%",
+        "couponCode": "EGGS20"
+      },
+      "topics": [
+        {
+          "name": "Egg Type",
+          "options": ["Regular", "Organic", "Brown"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1585203566316-033bafbc9d3e?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Paracetamol Tablets (15 Pack)",
+      "category": "pharmacy",
+      "price": 60,
+      "discountedPrice": null,
+      "image": "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop",
+      "description": "Relief from fever and pain (500mg each tablet)",
+      "inStock": true,
+      "rating": 4.4,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Quantity",
+          "options": ["15 tablets", "30 tablets", "60 tablets"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Antibiotic Cream",
+      "category": "pharmacy",
+      "price": 150,
+      "discountedPrice": 120,
+      "image": "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop",
+      "description": "Effective antibiotic cream for wound healing (25g)",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "20%",
+        "couponCode": "CREAM20"
+      },
+      "topics": [
+        {
+          "name": "Size",
+          "options": ["25g", "50g", "100g"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Cough Syrup",
+      "category": "pharmacy",
+      "price": 200,
+      "discountedPrice": 160,
+      "image": "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop",
+      "description": "Effective cough relief syrup (100ml bottle)",
+      "inStock": true,
+      "rating": 4.3,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Type",
+          "options": ["Dry Cough", "Wet Cough"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Vitamin C Tablets",
+      "category": "pharmacy",
+      "price": 280,
+      "discountedPrice": 220,
+      "image": "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop",
+      "description": "Immune boosting vitamin C tablets (30 tablets, 500mg each)",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "21%",
+        "couponCode": "VITC30"
+      },
+      "topics": [
+        {
+          "name": "Strength",
+          "options": ["500mg", "1000mg"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Multivitamin Capsules",
+      "category": "pharmacy",
+      "price": 450,
+      "discountedPrice": 380,
+      "image": "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop",
+      "description": "Complete multivitamin supplement with essential minerals (30 capsules)",
+      "inStock": true,
+      "rating": 4.8,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "16%",
+        "couponCode": "MULTI40"
+      },
+      "topics": [
+        {
+          "name": "Formula",
+          "options": ["Men", "Women", "Kids"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Pain Relief Gel",
+      "category": "pharmacy",
+      "price": 120,
+      "discountedPrice": 90,
+      "image": "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop",
+      "description": "Fast acting pain relief gel for muscle and joint pain (50g)",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Type",
+          "options": ["Cooling", "Warming"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Antacid Tablets",
+      "category": "pharmacy",
+      "price": 80,
+      "discountedPrice": null,
+      "image": "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop",
+      "description": "Quick relief from heartburn and acidity (20 tablets)",
+      "inStock": true,
+      "rating": 4.4,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Tablet Type",
+          "options": ["Chewable", "Regular"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1587854692152-cbe660dbde0b?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Digital Thermometer",
+      "category": "pharmacy",
+      "price": 320,
+      "discountedPrice": 280,
+      "image": "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop",
+      "description": "Accurate digital thermometer with quick reading feature",
+      "inStock": true,
+      "rating": 4.6,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "12%",
+        "couponCode": "THERMO20"
+      },
+      "topics": [
+        {
+          "name": "Type",
+          "options": ["Oral", "Digital Temporal"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1584308666744-24d5f400f6f5?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "First Aid Kit",
+      "category": "pharmacy",
+      "price": 580,
+      "discountedPrice": 480,
+      "image": "https://images.unsplash.com/photo-1603398644871-6fc76198a794?w=500&h=500&fit=crop",
+      "description": "Complete home first aid kit with essential medical supplies",
+      "inStock": true,
+      "rating": 4.7,
+      "deals": {
+        "isFlashDeal": true,
+        "flashDealDiscount": "17%",
+        "couponCode": "FIRSTAID50"
+      },
+      "topics": [
+        {
+          "name": "Kit Size",
+          "options": ["Small", "Medium", "Large"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1603398644871-6fc76198a794?w=500&h=500&fit=crop"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Allergy Relief Tablets",
+      "category": "pharmacy",
+      "price": 120,
+      "discountedPrice": 100,
+      "image": "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop",
+      "description": "Effective allergy relief tablets for seasonal and year-round allergies (10 tablets)",
+      "inStock": true,
+      "rating": 4.5,
+      "deals": {
+        "isFlashDeal": false,
+        "couponCode": ""
+      },
+      "topics": [
+        {
+          "name": "Strength",
+          "options": ["Single Strength", "Extra Strength"]
+        }
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1631549916768-4873519c3aba?w=500&h=500&fit=crop"
+      ]
+    }
+  ],
+  "coupons": [
+    {
+      "code": "BIRYANI50",
+      "discount": 100,
+      "discountType": "fixed",
+      "minAmount": 400,
+      "validTill": "2026-02-28"
+    },
+    {
+      "code": "FLASH20",
+      "discount": 20,
+      "discountType": "percentage",
+      "minAmount": 300,
+      "validTill": "2026-01-31"
+    },
+    {
+      "code": "WELCOME50",
+      "discount": 50,
+      "discountType": "fixed",
+      "minAmount": 200,
+      "validTill": "2026-03-31"
+    },
+    {
+      "code": "GROCERY100",
+      "discount": 100,
+      "discountType": "fixed",
+      "minAmount": 500,
+      "validTill": "2026-02-28"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Food Hub",
+      "slug": "food-hub",
+      "icon": "🍔",
+      "color": "from-orange-400 to-red-500",
+      "description": "Delicious fast food and meals"
+    },
+    {
+      "id": 2,
+      "name": "Grocery Hub",
+      "slug": "grocery-hub",
+      "icon": "🛒",
+      "color": "from-green-400 to-emerald-600",
+      "description": "Fresh groceries and daily essentials"
+    },
+    {
+      "id": 3,
+      "name": "Pharmacy Hub",
+      "slug": "pharmacy-hub",
+      "icon": "💊",
+      "color": "from-blue-400 to-cyan-600",
+      "description": "Medical supplies and health products"
+    }
+  ]
+}

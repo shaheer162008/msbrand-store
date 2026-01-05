@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useCart } from '@/lib/cart-context';
 import Search from './search';
 
-interface NavbarProps {
-  cartCount?: number;
-}
-
-export default function Navbar({ cartCount = 0 }: NavbarProps) {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { getTotalItems } = useCart();
+  const cartCount = getTotalItems();
 
   return (
     <>

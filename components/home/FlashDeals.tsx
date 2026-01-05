@@ -1,101 +1,114 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
+import Link from 'next/link';
+import { Zap, Star, ShoppingCart } from 'lucide-react';
+import productsData from '@/lib/products.json';
+import { useCart } from '@/lib/cart-context';
+import { useState } from 'react';
 
 export default function FlashDeals() {
-  const [time, setTime] = useState({ hours: 9, minutes: 18, seconds: 56 });
+  const { addToCart } = useCart();
+  const [justAdded, setJustAdded] = useState<number | null>(null);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime((prev) => {
-        let { hours, minutes, seconds } = prev;
-        
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        } else {
-          hours = 23;
-          minutes = 59;
-          seconds = 59;
-        }
-        
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
+  // Get flash deal products
+  const flashProducts = productsData.products.filter((p) => p.deals?.isFlashDeal).slice(0, 6);
 
-    return () => clearInterval(timer);
-  }, []);
-
-  const products = [
-    {
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop',
-      title: 'Noise-Cancel Headphones',
-      price: '$199.00',
-      rating: 4,
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2099&auto=format&fit=crop',
-      title: 'Smart Series Watch 8',
-      price: '$350.00',
-      badge: 'New',
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=2080&auto=format&fit=crop',
-      title: 'Smartphone Ultra Pro',
-      price: '$999.00',
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1904&auto=format&fit=crop',
-      title: 'Signature Fragrance',
-      price: '$75.00',
-    },
-  ];
+  const handleAddToCart = (product: any) => {
+    addToCart({
+      id: product.id.toString(),
+      name: product.name,
+      price: product.price,
+      discountedPrice: product.discountedPrice,
+      quantity: 1,
+      image: product.images[0],
+      category: product.category,
+    });
+    setJustAdded(product.id);
+    setTimeout(() => setJustAdded(null), 1500);
+  };
 
   return (
-    <section className="mt-10 sm:mt-14 md:mt-18 lg:mt-28 w-full px-3 sm:px-6 lg:px-8">
-      <div className="max-w-[1440px] mx-auto">
-        {/* Flash Deals Header - Centered */}
-        <div className="flex flex-col items-center gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-12">
-          {/* Title and Timer Section */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-900 uppercase italic tracking-tighter whitespace-nowrap flex items-center gap-2 sm:gap-3 md:gap-4">
-              <i className="fa-solid fa-bolt-lightning text-brand text-2xl sm:text-3xl md:text-4xl"></i>Flash Deals
-            </h2>
-            
-            {/* Timer */}
-            <div className="flex gap-1.5 sm:gap-2 md:gap-3 items-center">
-              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
-                {String(time.hours).padStart(2, '0')}
-              </div>
-              <span className="text-lg sm:text-2xl md:text-3xl font-black">:</span>
-              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
-                {String(time.minutes).padStart(2, '0')}
-              </div>
-              <span className="text-lg sm:text-2xl md:text-3xl font-black">:</span>
-              <div className="bg-black text-brand px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl font-black text-sm sm:text-base md:text-xl">
-                {String(time.seconds).padStart(2, '0')}
-              </div>
-            </div>
-          </div>
-          
-          {/* View All Button */}
-          <button className="text-[8px] sm:text-xs md:text-sm font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.3em] bg-slate-100 hover:bg-brand text-black px-6 sm:px-8 md:px-10 py-2 sm:py-2.5 md:py-3 rounded-full transition whitespace-nowrap">
-            View All Drops
-          </button>
+    <section className="py-12 bg-white">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <Zap className="text-yellow-400 w-7 h-7" />
+          <h2 className="text-3xl lg:text-4xl font-black text-black">Flash Deals</h2>
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4 lg:gap-6">
-          {products.map((product, index) => (
-            <ProductCard key={index} {...product} />
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          {flashProducts.map((product) => {
+            const discount = Math.round(
+              ((product.price - product.discountedPrice) / product.price) * 100
+            );
+
+            return (
+              <Link
+                key={product.id}
+                href={`/product/${product.id}`}
+                className="bg-white border-2 border-yellow-400 rounded-lg overflow-hidden hover:shadow-lg transition-all group"
+              >
+                {/* Image */}
+                <div className="relative bg-gray-100 h-32 sm:h-40 overflow-hidden">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  {discount > 0 && (
+                    <div className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 rounded font-bold text-xs">
+                      -{discount}%
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-2 sm:p-3">
+                  <h3 className="text-xs sm:text-sm font-bold text-black line-clamp-2 mb-2">
+                    {product.name}
+                  </h3>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className="text-yellow-400 text-xs">★</span>
+                    <span className="text-xs font-bold text-black">{product.rating}</span>
+                  </div>
+
+                  {/* Price */}
+                  <p className="text-yellow-400 font-black text-sm">Rs {product.discountedPrice}</p>
+                  {product.price !== product.discountedPrice && (
+                    <p className="text-gray-400 line-through text-xs">Rs {product.price}</p>
+                  )}
+
+                  {/* Button */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleAddToCart(product);
+                    }}
+                    className={`w-full font-bold text-xs py-1.5 rounded mt-2 transition-all ${
+                      justAdded === product.id
+                        ? 'bg-green-500 text-white'
+                        : 'bg-yellow-400 hover:bg-yellow-500 text-black'
+                    }`}
+                  >
+                    {justAdded === product.id ? '✓' : 'Add'}
+                  </button>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* View All */}
+        <div className="text-center mt-8">
+          <Link
+            href="/food-hub"
+            className="inline-block bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-bold transition-all text-sm sm:text-base"
+          >
+            View All Products →
+          </Link>
         </div>
       </div>
     </section>

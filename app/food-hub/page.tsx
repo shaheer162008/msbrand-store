@@ -1,92 +1,103 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import MarketplaceHeader from '@/components/marketplace/MarketplaceHeader';
 import ProductCard from '@/components/marketplace/ProductCard';
+import { subscribeToProductsByCategory } from '@/lib/products-service';
+import { useCart } from '@/lib/cart-context';
 
-const FOOD_ITEMS = [
-  {
-    id: 1,
-    name: 'Double Smash Burger',
-    category: 'Burgers',
-    price: 14.99,
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500&auto=format&fit=crop',
-    description: 'Two 4oz Wagyu patties, secret MS sauce, and caramelized onions on a brioche bun.',
-  },
-  {
-    id: 2,
-    name: 'Truffle Mushroom Pizza',
-    category: 'Pizza',
-    price: 22.5,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=500&auto=format&fit=crop',
-    description: 'Wild mushrooms, truffle oil, and fresh mozzarella on a 48-hour fermented crust.',
-  },
-  {
-    id: 3,
-    name: 'Dragon Signature Roll',
-    category: 'Sushi',
-    price: 18.0,
-    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=500&auto=format&fit=crop',
-    description: 'Tempura shrimp, avocado, topped with unagi and house-made spicy mayo.',
-  },
-  {
-    id: 4,
-    name: 'Spicy Pepperoni',
-    category: 'Pizza',
-    price: 19.99,
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=500&auto=format&fit=crop',
-    description: 'Our signature spicy pepperoni with honey drizzle and fresh basil.',
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  description?: string;
+  stock?: number;
+}
 
 export default function FoodHubPage() {
-  const [filteredItems, setFilteredItems] = useState(FOOD_ITEMS);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartCount, setCartCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const { cart, addToCart } = useCart();
+
+  // Subscribe to Food products from Firebase
+  useEffect(() => {
+    setLoading(true);
+    const unsubscribe = subscribeToProductsByCategory('Food', (productsData) => {
+      setProducts(productsData);
+      setFilteredItems(productsData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category.toLowerCase());
     if (category.toLowerCase() === 'all') {
-      setFilteredItems(FOOD_ITEMS);
+      setFilteredItems(products);
     } else {
-      setFilteredItems(FOOD_ITEMS.filter((item) => item.category.toLowerCase() === category.toLowerCase()));
+      setFilteredItems(
+        products.filter((item) => item.category.toLowerCase() === category.toLowerCase())
+      );
     }
   };
 
-  const handleAddToCart = () => {
-    setCartCount((prev) => prev + 1);
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      discountedPrice: product.price,
+      image: product.image,
+      category: product.category,
+      quantity: 1,
+    });
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       <MarketplaceHeader
         title="What's on the <span>Menu Today?</span>"
         subtitle="Premium curated local flavors"
         categories={['All Items', 'Burgers', 'Pizza', 'Sushi']}
         onCategoryChange={handleCategoryChange}
-        cartCount={cartCount}
+        cartCount={cart.length}
       />
 
       {/* Products Grid */}
       <main className="flex-grow max-w-[1440px] mx-auto px-6 sm:px-8 py-8 sm:py-12 w-full">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-          {filteredItems.map((item) => (
-            <ProductCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              price={item.price}
-              image={item.image}
-              category={item.category}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-slate-600 font-medium">Loading products...</p>
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600 text-lg">No products available</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+            {filteredItems.map((item) => (
+              <ProductCard
+                key={item.id}
+                id={parseInt(item.id) || 0}
+                name={item.name}
+                price={item.price}
+                image={item.image}
+                category={item.category}
+                onAddToCart={() => handleAddToCart(item)}
+              />
+            ))}
+          </div>
+        )}
       </main>
 
       <Footer />

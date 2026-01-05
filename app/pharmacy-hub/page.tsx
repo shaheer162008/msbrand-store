@@ -1,86 +1,101 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import MarketplaceHeader from '@/components/marketplace/MarketplaceHeader';
 import ProductCard from '@/components/marketplace/ProductCard';
+import { subscribeToProductsByCategory } from '@/lib/products-service';
+import { useCart } from '@/lib/cart-context';
 
-const PHARMACY_ITEMS = [
-  {
-    id: 1,
-    name: 'Vitamin C 1000mg',
-    category: 'Vitamins',
-    price: 12.99,
-    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde2d?q=80&w=500&auto=format&fit=crop',
-  },
-  {
-    id: 2,
-    name: 'Pain Relief Tablets',
-    category: 'Pain Relief',
-    price: 8.99,
-    image: 'https://images.unsplash.com/photo-1543318014-198dfe8f2e1f?q=80&w=500&auto=format&fit=crop',
-  },
-  {
-    id: 3,
-    name: 'Digital Thermometer',
-    category: 'Medical Devices',
-    price: 19.99,
-    image: 'https://images.unsplash.com/photo-1600243696313-90218e686b4b?q=80&w=500&auto=format&fit=crop',
-  },
-  {
-    id: 4,
-    name: 'Cold & Flu Relief',
-    category: 'Cold & Cough',
-    price: 6.99,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28974a94ae5?q=80&w=500&auto=format&fit=crop',
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  description?: string;
+  stock?: number;
+}
 
 export default function PharmacyHubPage() {
-  const [filteredItems, setFilteredItems] = useState(PHARMACY_ITEMS);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartCount, setCartCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const { cart, addToCart } = useCart();
+
+  // Subscribe to Pharmacy products from Firebase
+  useEffect(() => {
+    setLoading(true);
+    const unsubscribe = subscribeToProductsByCategory('Pharmacy', (productsData) => {
+      setProducts(productsData);
+      setFilteredItems(productsData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category.toLowerCase());
     if (category.toLowerCase() === 'all') {
-      setFilteredItems(PHARMACY_ITEMS);
+      setFilteredItems(products);
     } else {
-      setFilteredItems(PHARMACY_ITEMS.filter((item) => item.category.toLowerCase() === category.toLowerCase()));
+      setFilteredItems(
+        products.filter((item) => item.category.toLowerCase() === category.toLowerCase())
+      );
     }
   };
 
-  const handleAddToCart = () => {
-    setCartCount((prev) => prev + 1);
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      discountedPrice: product.price,
+      image: product.image,
+      category: product.category,
+      quantity: 1,
+    });
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       <MarketplaceHeader
         title="Your Health <span>Matters</span>"
         subtitle="Premium pharmacy products & wellness essentials"
         categories={['All Items', 'Vitamins', 'Pain Relief', 'Medical Devices']}
         onCategoryChange={handleCategoryChange}
-        cartCount={cartCount}
+        cartCount={cart.length}
       />
 
       <main className="flex-grow max-w-[1440px] mx-auto px-6 sm:px-8 py-8 sm:py-12 w-full">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-          {filteredItems.map((item) => (
-            <ProductCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              price={item.price}
-              image={item.image}
-              category={item.category}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-slate-600 font-medium">Loading products...</p>
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600 text-lg">No products available</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+            {filteredItems.map((item) => (
+              <ProductCard
+                key={item.id}
+                id={parseInt(item.id) || 0}
+                name={item.name}
+                price={item.price}
+                image={item.image}
+                category={item.category}
+                onAddToCart={() => handleAddToCart(item)}
+              />
+            ))}
+          </div>
+        )}
       </main>
 
       <Footer />

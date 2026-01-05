@@ -1,65 +1,102 @@
 'use client';
 
+import Link from 'next/link';
+import { Star, ShoppingCart, Tag } from 'lucide-react';
+
 interface ProductCardProps {
   id: number;
   name: string;
   price: number;
+  discountedPrice?: number | null;
   image: string;
   category?: string;
+  rating?: number;
+  isFlashDeal?: boolean;
+  flashDealDiscount?: string;
   onAddToCart?: () => void;
-  onPreview?: () => void;
 }
 
 export default function ProductCard({
   id,
   name,
   price,
+  discountedPrice,
   image,
   category,
+  rating = 4.5,
+  isFlashDeal = false,
+  flashDealDiscount,
   onAddToCart,
-  onPreview,
 }: ProductCardProps) {
+  const discount = discountedPrice 
+    ? Math.round(((price - discountedPrice) / price) * 100) 
+    : 0;
+
   return (
-    <div
-      className="group bg-white p-3 sm:p-4 lg:p-5 rounded-xl sm:rounded-2xl lg:rounded-[2.5rem] border-2 cursor-pointer transition-all hover:shadow-lg"
-      style={{ borderColor: '#f8fafc' }}
-      onClick={onPreview}
-    >
-      {/* Image */}
-      <div className="aspect-square rounded-lg sm:rounded-xl lg:rounded-[2rem] overflow-hidden mb-3 sm:mb-4 lg:mb-6 bg-slate-100">
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-110"
-        />
-      </div>
+    <Link href={`/product/${id}`}>
+      <div className="group bg-white border-2 border-yellow-400 rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer">
+        {/* Image */}
+        <div className="relative bg-gray-100 h-48 overflow-hidden">
+          <img 
+            src={image} 
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          />
+          
+          {/* Discount Badge */}
+          {discount > 0 && (
+            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded font-bold text-xs">
+              -{discount}%
+            </div>
+          )}
+        </div>
 
-      {/* Content */}
-      <div>
-        {category && (
-          <p className="text-[7px] sm:text-[8px] lg:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">
-            {category}
-          </p>
-        )}
-        <h3 className="text-sm sm:text-base lg:text-xl font-black uppercase tracking-tight line-clamp-2 mb-2 sm:mb-3 lg:mb-4">
-          {name}
-        </h3>
+        {/* Content */}
+        <div className="p-3">
+          {/* Category */}
+          {category && (
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+              {category}
+            </p>
+          )}
 
-        {/* Price & Add Button */}
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-lg sm:text-xl lg:text-2xl font-black leading-none">${price.toFixed(2)}</span>
-          <button
+          {/* Rating */}
+          <div className="flex items-center gap-1 mb-2">
+            <span className="text-yellow-400 text-xs">★</span>
+            <span className="text-xs font-bold text-black">{rating}</span>
+          </div>
+
+          {/* Name */}
+          <h3 className="font-bold text-sm mb-2 line-clamp-2 text-black">
+            {name}
+          </h3>
+
+          {/* Price */}
+          <div className="flex items-center gap-2 mb-3">
+            {discountedPrice ? (
+              <>
+                <span className="text-lg font-black text-yellow-400">Rs {discountedPrice}</span>
+                <span className="text-xs text-gray-500 line-through">Rs {price}</span>
+              </>
+            ) : (
+              <span className="text-lg font-black text-yellow-400">Rs {price}</span>
+            )}
+          </div>
+
+          {/* Add to Cart Button */}
+          <button 
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               onAddToCart?.();
             }}
-            className="w-9 sm:w-10 lg:w-12 h-9 sm:h-10 lg:h-12 bg-black rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center transition-all hover:shadow-lg active:scale-95 flex-shrink-0"
-            style={{ color: '#FFD600' }}
+            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black py-2 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 text-sm font-black"
           >
-            <i className="fa-solid fa-plus text-xs sm:text-sm lg:text-base"></i>
+            <ShoppingCart size={16} />
+            Add
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

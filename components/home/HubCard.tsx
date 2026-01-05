@@ -39,7 +39,7 @@ const HubCard: React.FC<HubCardProps> = ({
   };
 
   return (
-    <div className={`${colSpanClass} section-card flex flex-col justify-between group lazy-element`}>
+    <div className={`${colSpanClass} section-card border-2 border-yellow-400 rounded-lg bg-white p-6 flex flex-col justify-between group lazy-element hover:shadow-lg transition-all`}>
       {image && (
         <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
           <Image
@@ -51,22 +51,22 @@ const HubCard: React.FC<HubCardProps> = ({
         </div>
       )}
       <div>
-        <div className={`icon-box ${iconBgColor}`}>
-          <i className={`fa-solid fa-${icon}`}></i>
+        <div className={`icon-box inline-block p-3 rounded-lg mb-3 ${iconBgColor}`}>
+          <i className={`fa-solid fa-${icon} text-xl`}></i>
         </div>
-        <h2 className="text-2xl font-900 uppercase tracking-tight">{title}</h2>
-        <p className="text-slate-500 mt-2 font-medium">{description}</p>
+        <h2 className="text-2xl font-black uppercase tracking-tight text-black">{title}</h2>
+        <p className="text-slate-600 mt-2 font-medium">{description}</p>
       </div>
       {layout === 'full' ? (
         <div className="mt-8 flex gap-4">
           <Link href={href}>
-            <button className={buttonStyle[buttonType]}>{buttonText}</button>
+            <button className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-bold text-sm transition">{buttonText}</button>
           </Link>
-          <button className={buttonStyle.secondary}>View Menu</button>
+          <button className="px-8 py-3 rounded-lg font-bold text-sm border-2 border-yellow-400 text-black hover:bg-yellow-50 transition">View Menu</button>
         </div>
       ) : (
         <Link href={href}>
-          <button className={`mt-6 inline-block ${buttonStyle.default}`}>{buttonText}</button>
+          <button className="mt-6 inline-block text-sm font-bold text-yellow-500 hover:text-yellow-600 border-b-2 border-yellow-400 pb-1">{buttonText}</button>
         </Link>
       )}
     </div>
