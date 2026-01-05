@@ -23,7 +23,7 @@ export default function ProfilePage() {
       router.push('/login');
       return;
     }
-    if (user.addresses) {
+    if (user.addresses && Array.isArray(user.addresses)) {
       setAddresses(user.addresses);
     }
   }, [user, router]);
@@ -42,9 +42,10 @@ export default function ProfilePage() {
     const newAddress: Address = {
       id: Date.now().toString(),
       label: formData.label,
-      address: formData.address,
+      street: formData.address,
       city: formData.city,
       zipCode: formData.zipCode,
+      phone: '',
       isDefault: addresses.length === 0,
     };
 
@@ -64,7 +65,7 @@ export default function ProfilePage() {
     const updatedAddress: Address = {
       ...editingAddress,
       label: formData.label,
-      address: formData.address,
+      street: formData.address,
       city: formData.city,
       zipCode: formData.zipCode,
     };
@@ -86,7 +87,7 @@ export default function ProfilePage() {
     setEditingAddress(address);
     setFormData({
       label: address.label,
-      address: address.address,
+      address: address.street,
       city: address.city,
       zipCode: address.zipCode,
     });
@@ -319,7 +320,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <p className="text-gray-700 mb-2">{address.address}</p>
+                  <p className="text-gray-700 mb-2">{address.street}</p>
                   <p className="text-sm text-gray-600 mb-3">{address.city}, {address.zipCode}</p>
 
                   {!address.isDefault && (

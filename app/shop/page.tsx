@@ -71,7 +71,7 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       <MarketplaceHeader
         title="Our <span>Catalog</span>"

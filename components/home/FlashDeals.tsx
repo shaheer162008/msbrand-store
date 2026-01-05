@@ -39,9 +39,9 @@ export default function FlashDeals() {
         {/* Products Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {flashProducts.map((product) => {
-            const discount = Math.round(
+            const discount = product.discountedPrice ? Math.round(
               ((product.price - product.discountedPrice) / product.price) * 100
-            );
+            ) : 0;
 
             return (
               <Link
