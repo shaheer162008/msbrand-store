@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
+import { useAuth } from '@/lib/auth-context';
 import Search from './search';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { getTotalItems } = useCart();
   const cartCount = getTotalItems();
+  const { user, isAuthenticated, logout } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <>
@@ -73,36 +77,101 @@ export default function Navbar() {
                   <i className="fa-solid fa-car-side text-sm"></i>
                   <span className="hidden lg:inline">Drive</span>
                 </a>
-                <button className="relative flex items-center justify-center gap-1 text-[8px] lg:text-[11px] font-black uppercase text-slate-600 hover:text-black transition">
-                  <i className="fa-solid fa-shopping-cart text-sm"></i>
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2.5 -right-1 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[6px] font-black">{cartCount}</span>
-                  )}
-                </button>
+                <Link href="/checkout">
+                  <button className="relative flex items-center justify-center gap-1 text-[8px] lg:text-[11px] font-black uppercase text-slate-600 hover:text-black transition">
+                    <i className="fa-solid fa-shopping-cart text-sm"></i>
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2.5 -right-1 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[6px] font-black">{cartCount}</span>
+                    )}
+                  </button>
+                </Link>
               </div>
 
-              {/* Sign In Button */}
-              <a href="/login">
-                <button
-                  className="font-black text-[9px] lg:text-xs uppercase px-2.5 lg:px-4 py-1.5 lg:py-2 border-2 rounded-lg transition hover:opacity-90"
-                  style={{
-                    borderColor: '#FFD600',
-                    color: '#000000',
-                    backgroundColor: 'transparent',
-                  }}
-                >
-                  Sign In
-                </button>
-              </a>
+              {/* Auth Section */}
+              {isAuthenticated && user ? (
+                <div className="flex items-center gap-2 lg:gap-3">
+                  {/* Admin Dashboard Button */}
+                  {user.userType === 'admin' && (
+                    <Link href="/admin-dashboard">
+                      <button className="font-black text-[9px] lg:text-xs uppercase px-2.5 lg:px-4 py-1.5 lg:py-2 border-2 rounded-lg transition hover:opacity-90"
+                        style={{ borderColor: '#FFD600', color: '#000000', backgroundColor: 'transparent' }}>
+                        Dashboard
+                      </button>
+                    </Link>
+                  )}
+
+                  {/* Seller Dashboard Button */}
+                  {user.userType === 'seller' && (
+                    <Link href="/seller-dashboard">
+                      <button className="font-black text-[9px] lg:text-xs uppercase px-2.5 lg:px-4 py-1.5 lg:py-2 border-2 rounded-lg transition hover:opacity-90"
+                        style={{ borderColor: '#FFD600', color: '#000000', backgroundColor: 'transparent' }}>
+                        My Shop
+                      </button>
+                    </Link>
+                  )}
+
+                  {/* Client Profile Button */}
+                  {user.userType === 'client' && (
+                    <Link href="/profile">
+                      <button className="font-black text-[9px] lg:text-xs uppercase px-2.5 lg:px-4 py-1.5 lg:py-2 border-2 rounded-lg transition hover:opacity-90"
+                        style={{ borderColor: '#FFD600', color: '#000000', backgroundColor: 'transparent' }}>
+                        Profile
+                      </button>
+                    </Link>
+                  )}
+
+                  {/* User Dropdown */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className="flex items-center gap-1.5 text-[8px] lg:text-[11px] font-black uppercase text-slate-600 hover:text-black transition"
+                    >
+                      <i className="fa-solid fa-user text-sm"></i>
+                      <span className="hidden lg:inline">{user.name?.split(' ')[0]}</span>
+                      <i className={`fa-solid fa-chevron-down text-[7px] transition ${dropdownOpen ? 'rotate-180' : ''}`}></i>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {dropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-32 bg-white border-2 border-slate-200 rounded-lg shadow-lg z-50">
+                        <button
+                          onClick={() => {
+                            logout();
+                            setDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-xs font-black uppercase text-slate-600 hover:text-black hover:bg-slate-50 rounded-lg transition"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <Link href="/login">
+                  <button
+                    className="font-black text-[9px] lg:text-xs uppercase px-2.5 lg:px-4 py-1.5 lg:py-2 border-2 rounded-lg transition hover:opacity-90"
+                    style={{
+                      borderColor: '#FFD600',
+                      color: '#000000',
+                      backgroundColor: 'transparent',
+                    }}
+                  >
+                    Sign In
+                  </button>
+                </Link>
+              )}
             </nav>
 
             {/* Mobile Cart - Only visible on sm to lg */}
-            <button className="flex lg:hidden relative items-center justify-center w-8 sm:w-9 h-8 sm:h-9 rounded-lg hover:bg-slate-100 transition flex-shrink-0">
-              <i className="fa-solid fa-shopping-cart text-base sm:text-lg"></i>
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-1.5 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-black">{cartCount}</span>
-              )}
-            </button>
+            <Link href="/checkout" className="flex lg:hidden">
+              <button className="relative flex items-center justify-center w-8 sm:w-9 h-8 sm:h-9 rounded-lg hover:bg-slate-100 transition flex-shrink-0">
+                <i className="fa-solid fa-shopping-cart text-base sm:text-lg"></i>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-1.5 bg-brand text-black w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-black">{cartCount}</span>
+                )}
+              </button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -139,18 +208,62 @@ export default function Navbar() {
                 
                 <div className="h-px bg-slate-200 my-1"></div>
 
-                <a href="/login" className="w-full">
-                  <button
-                    className="w-full font-black text-xs uppercase px-3 py-2 sm:py-2.5 border-2 rounded-lg transition hover:opacity-90"
-                    style={{
-                      borderColor: '#FFD600',
-                      color: '#000000',
-                      backgroundColor: 'transparent',
-                    }}
-                  >
-                    Sign In
-                  </button>
-                </a>
+                {/* Auth Section - Mobile */}
+                {isAuthenticated && user ? (
+                  <>
+                    {/* Admin Dashboard Button */}
+                    {user.userType === 'admin' && (
+                      <Link href="/admin-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                        <button className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm font-black uppercase text-slate-600 hover:text-black rounded-lg hover:bg-white transition">
+                          <i className="fa-solid fa-gauge text-base"></i>Dashboard
+                        </button>
+                      </Link>
+                    )}
+
+                    {/* Seller Dashboard Button */}
+                    {user.userType === 'seller' && (
+                      <Link href="/seller-dashboard" onClick={() => setMobileMenuOpen(false)}>
+                        <button className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm font-black uppercase text-slate-600 hover:text-black rounded-lg hover:bg-white transition">
+                          <i className="fa-solid fa-store text-base"></i>My Shop
+                        </button>
+                      </Link>
+                    )}
+
+                    {/* Client Profile Button */}
+                    {user.userType === 'client' && (
+                      <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
+                        <button className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm font-black uppercase text-slate-600 hover:text-black rounded-lg hover:bg-white transition">
+                          <i className="fa-solid fa-user text-base"></i>Profile
+                        </button>
+                      </Link>
+                    )}
+
+                    <div className="h-px bg-slate-200 my-1"></div>
+
+                    <button
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm font-black uppercase text-slate-600 hover:text-black rounded-lg hover:bg-white transition"
+                    >
+                      <i className="fa-solid fa-sign-out text-base"></i>Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link href="/login" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                    <button
+                      className="w-full font-black text-xs uppercase px-3 py-2 sm:py-2.5 border-2 rounded-lg transition hover:opacity-90"
+                      style={{
+                        borderColor: '#FFD600',
+                        color: '#000000',
+                        backgroundColor: 'transparent',
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  </Link>
+                )}
               </div>
             </nav>
           </div>

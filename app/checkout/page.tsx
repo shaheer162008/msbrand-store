@@ -6,10 +6,15 @@ import { useCart } from '@/lib/cart-context';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
-import { ArrowLeft, MapPin, CreditCard, Phone } from 'lucide-react';
+import { ArrowLeft, MapPin, CreditCard, Phone, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { calculateDeliveryCharges } from '@/lib/delivery-charges';
+import DeliveryConfirmation from '@/components/DeliveryConfirmation';
+import LocationSelector from '@/components/LocationSelector';
+import { Location, isValidLocation } from '@/lib/location-service';
+import { useDeliveryZones } from '@/lib/use-delivery-zones';
 
 interface Address {
   id: string;
@@ -19,18 +24,24 @@ interface Address {
   zipCode: string;
   phone: string;
   isDefault: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 export default function CheckoutPage() {
   const { user, isAuthenticated, loading } = useAuth();
   const { cart, getTotalPrice, clearCart } = useCart();
   const router = useRouter();
+  const { isCityDeliveryAvailable, getZoneErrorMessage, zones } = useDeliveryZones();
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [orderPlacing, setOrderPlacing] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showDeliveryConfirm, setShowDeliveryConfirm] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>(user?.addresses || []);
+  const [deliverySummary, setDeliverySummary] = useState<any>(null);
+  const [zoneError, setZoneError] = useState<string>('');
   const [newAddress, setNewAddress] = useState({
     label: '',
     street: '',
@@ -38,6 +49,8 @@ export default function CheckoutPage() {
     zipCode: '',
     phone: '',
     isDefault: false,
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined,
   });
 
   // Redirect to login if not authenticated
@@ -66,10 +79,39 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Ensure latitude and longitude are defined before validation
+    if (!newAddress.latitude || !newAddress.longitude) {
+      alert('Please select location on map');
+      return;
+    }
+
+    const locationToValidate: Location = {
+      latitude: newAddress.latitude,
+      longitude: newAddress.longitude,
+    };
+
+    if (!isValidLocation(locationToValidate)) {
+      alert('Please select location on map');
+      return;
+    }
+
+    // Check if city has delivery available
+    if (!isCityDeliveryAvailable(newAddress.city)) {
+      alert(getZoneErrorMessage(newAddress.city));
+      return;
+    }
+
     const addressId = `ADDR-${Date.now()}`;
     const addressToAdd: Address = {
       id: addressId,
-      ...newAddress,
+      label: newAddress.label,
+      street: newAddress.street,
+      city: newAddress.city,
+      zipCode: newAddress.zipCode,
+      phone: newAddress.phone,
+      isDefault: newAddress.isDefault,
+      latitude: newAddress.latitude,
+      longitude: newAddress.longitude,
     };
 
     // Add to local state
@@ -97,18 +139,32 @@ export default function CheckoutPage() {
     }
 
     // Reset form
-    setNewAddress({ label: '', street: '', city: '', zipCode: '', phone: '', isDefault: false });
+    setNewAddress({ label: '', street: '', city: '', zipCode: '', phone: '', isDefault: false, latitude: undefined, longitude: undefined });
     setShowAddressModal(false);
   };
 
   const subtotal = getTotalPrice();
-  const shipping = subtotal > 500 ? 0 : 50;
-  const tax = Math.round(subtotal * 0.17);
+  const selectedAddressObj = addresses.find(a => a.id === selectedAddress);
+  
+  // Use delivery summary if confirmed, otherwise show estimated
+  const tax = deliverySummary?.tax || (cart.length * 15);
+  const shipping = deliverySummary?.deliveryFee || 0;
   const total = subtotal + shipping + tax;
+
+  const handleConfirmDelivery = (summary: any) => {
+    setDeliverySummary(summary);
+    setShowDeliveryConfirm(false);
+  };
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress || !agreeTerms) {
       alert('Please select address and accept terms');
+      return;
+    }
+
+    if (!deliverySummary) {
+      // Show delivery confirmation first
+      setShowDeliveryConfirm(true);
       return;
     }
 
@@ -124,6 +180,8 @@ export default function CheckoutPage() {
         shipping,
         tax,
         total,
+        deliveryDistance: deliverySummary.distance,
+        estimatedDeliveryTime: deliverySummary.estimatedTimeMinutes,
         addressId: selectedAddress,
         paymentMethod,
         status: 'pending', // Order is pending until admin accepts
@@ -220,28 +278,37 @@ export default function CheckoutPage() {
 
                 {addresses && addresses.length > 0 ? (
                   <div className="space-y-3">
-                    {addresses.map((addr: Address) => (
-                      <label key={addr.id} className="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-yellow-400 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="address"
-                          value={addr.id}
-                          checked={selectedAddress === addr.id}
-                          onChange={() => setSelectedAddress(addr.id)}
-                          className="mt-1"
-                        />
-                        <div className="ml-4 flex-1">
-                          <p className="font-bold text-black">
-                            {addr.label} {addr.isDefault && <span className="text-xs bg-yellow-400 px-2 py-1 rounded ml-2">Default</span>}
-                          </p>
-                          <p className="text-gray-600 text-sm">{addr.street}</p>
-                          <p className="text-gray-600 text-sm">{addr.city}, {addr.zipCode}</p>
-                          <p className="text-gray-600 text-sm flex items-center gap-1 mt-1">
-                            <Phone size={14} /> {addr.phone}
-                          </p>
-                        </div>
-                      </label>
-                    ))}
+                    {addresses.map((addr: Address) => {
+                      const isDeliveryAvailable = isCityDeliveryAvailable(addr.city);
+                      return (
+                        <label key={addr.id} className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition ${
+                          selectedAddress === addr.id ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:border-yellow-400'
+                        } ${!isDeliveryAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                          <input
+                            type="radio"
+                            name="address"
+                            value={addr.id}
+                            checked={selectedAddress === addr.id}
+                            onChange={() => isDeliveryAvailable && setSelectedAddress(addr.id)}
+                            disabled={!isDeliveryAvailable}
+                            className="mt-1"
+                          />
+                          <div className="ml-4 flex-1">
+                            <p className="font-bold text-black">
+                              {addr.label} {addr.isDefault && <span className="text-xs bg-yellow-400 px-2 py-1 rounded ml-2">Default</span>}
+                            </p>
+                            <p className="text-gray-600 text-sm">{addr.street}</p>
+                            <p className="text-gray-600 text-sm">{addr.city}, {addr.zipCode}</p>
+                            <p className="text-gray-600 text-sm flex items-center gap-1 mt-1">
+                              <Phone size={14} /> {addr.phone}
+                            </p>
+                            {!isDeliveryAvailable && (
+                              <p className="text-red-600 text-xs font-semibold mt-2">⚠️ Delivery not available in {addr.city}</p>
+                            )}
+                          </div>
+                        </label>
+                      );
+                    })}
                     <button 
                       onClick={() => setShowAddressModal(true)}
                       className="w-full mt-4 border-2 border-dashed border-yellow-400 hover:bg-yellow-50 text-black font-bold py-2 px-6 rounded-lg transition"
@@ -261,6 +328,39 @@ export default function CheckoutPage() {
                   </div>
                 )}
               </div>
+
+              {/* Delivery Summary Preview */}
+              {deliverySummary && (
+                <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <AlertCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <h3 className="text-lg font-black text-green-900">Delivery Confirmed</h3>
+                      <p className="text-sm text-green-700 mt-1">{deliverySummary.distanceString}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 text-center mb-4">
+                    <div>
+                      <p className="text-2xl font-black text-green-900">{deliverySummary.estimatedTimeMinutes}</p>
+                      <p className="text-xs text-green-700">Est. Time</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-green-900">RS {deliverySummary.deliveryFee}</p>
+                      <p className="text-xs text-green-700">Delivery Fee</p>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black text-green-900">RS {deliverySummary.tax}</p>
+                      <p className="text-xs text-green-700">Tax</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setDeliverySummary(null)}
+                    className="w-full text-sm text-green-700 hover:text-green-900 font-semibold"
+                  >
+                    Change Address
+                  </button>
+                </div>
+              )}
 
               {/* Payment Method */}
               <div className="bg-white rounded-lg border-2 border-yellow-400 p-6">
@@ -334,12 +434,12 @@ export default function CheckoutPage() {
                     <span className="font-bold text-black">Rs {subtotal}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="font-bold text-black">{shipping === 0 ? 'FREE' : `Rs ${shipping}`}</span>
+                    <span className="text-gray-600">Tax ({cart.length} items × Rs 15)</span>
+                    <span className="font-bold text-black">Rs {tax}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Tax (17%)</span>
-                    <span className="font-bold text-black">Rs {tax}</span>
+                    <span className="text-gray-600">Delivery Fee {deliverySummary?.distance && deliverySummary.distance > 0 && `(${deliverySummary.distance}km)`}</span>
+                    <span className="font-bold text-black">{shipping === 0 ? 'FREE' : `Rs ${shipping}`}</span>
                   </div>
                   <div className="flex justify-between text-lg border-t-2 border-gray-200 pt-3">
                     <span className="font-black text-black">Total</span>
@@ -447,6 +547,24 @@ export default function CheckoutPage() {
                 <span className="text-xs font-bold text-gray-700">Set as default address</span>
               </label>
 
+              {/* Location Selector */}
+              <div className="max-h-64 overflow-y-auto border-t pt-4">
+                <LocationSelector
+                  value={newAddress.latitude && newAddress.longitude ? {
+                    latitude: newAddress.latitude,
+                    longitude: newAddress.longitude,
+                  } : undefined}
+                  onChange={(location) => setNewAddress({
+                    ...newAddress,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  })}
+                  label="Delivery Location"
+                  placeholder="Select location for accurate delivery"
+                  showMap={true}
+                />
+              </div>
+
               {/* Buttons */}
               <div className="flex gap-3 mt-6">
                 <button
@@ -466,6 +584,18 @@ export default function CheckoutPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Delivery Confirmation Dialog */}
+      {selectedAddressObj && (
+        <DeliveryConfirmation
+          isOpen={showDeliveryConfirm}
+          address={selectedAddressObj}
+          sellerLocation={{ latitude: 24.9056, longitude: 67.0822 }} // Default admin food hub location
+          itemCount={cart.length}
+          onConfirm={handleConfirmDelivery}
+          onCancel={() => setShowDeliveryConfirm(false)}
+        />
       )}
       <Footer />
     </>

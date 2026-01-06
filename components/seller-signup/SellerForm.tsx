@@ -1,9 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
+import CNICUploadForm, { CNICData } from './CNICUploadForm';
+import { updateSellerCNIC } from '@/lib/seller-approval-service';
 
 export default function SellerForm() {
   const [selectedVolume, setSelectedVolume] = useState('50+');
+  const [showCNICForm, setShowCNICForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const { user } = useAuth();
+  const router = useRouter();
 
   return (
     <div className="lg:w-1/2 w-full">
@@ -86,11 +95,12 @@ export default function SellerForm() {
 
           {/* Submit Button */}
           <button
-            type="submit"
+            type="button"
+            onClick={() => setShowCNICForm(true)}
             className="w-full bg-black py-5 rounded-2xl font-bold text-sm shadow-xl hover:bg-zinc-800 transition-all mt-6 flex items-center justify-center gap-2"
             style={{ color: '#FFD600' }}
           >
-            Register My Store <i className="fa-solid fa-shop"></i>
+            Next: Verify Identity <i className="fa-solid fa-arrow-right"></i>
           </button>
         </form>
 
@@ -98,6 +108,47 @@ export default function SellerForm() {
           By registering, you agree to the MS Seller Merchant Agreement.
         </p>
       </div>
+
+      {/* CNIC Upload Section */}
+      {showCNICForm && user && (
+        <div className="mt-8">
+          <CNICUploadForm
+            isLoading={isLoading}
+            onSubmit={async (data: CNICData) => {
+              setIsLoading(true);
+              try {
+                if (!user.uid) throw new Error('User ID not found');
+                
+                await updateSellerCNIC(
+                  user.uid,
+                  data.cnicNumber,
+                  data.frontImage,
+                  data.backImage
+                );
+                
+                setSuccessMessage('CNIC submitted successfully! Your account is now pending admin approval.');
+                setShowCNICForm(false);
+                
+                // Redirect to pending confirmation page
+                setTimeout(() => {
+                  router.push('/seller-signup/pending');
+                }, 2000);
+              } catch (error) {
+                throw error;
+              } finally {
+                setIsLoading(false);
+              }}
+            }
+          />
+        </div>
+      )}
+
+      {/* Success Message */}
+      {successMessage && (
+        <div className="mt-6 p-4 bg-green-50 border-2 border-green-200 rounded-2xl">
+          <p className="text-sm text-green-700 font-medium">{successMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,30 +6,26 @@ import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import MarketplaceHeader from '@/components/marketplace/MarketplaceHeader';
 import ProductCard from '@/components/marketplace/ProductCard';
-import { subscribeToProductsByCategory } from '@/lib/products-service';
+import { subscribeToFoodByCategory } from '@/lib/menu-service';
 import { useCart } from '@/lib/cart-context';
+import { MenuItem } from '@/lib/menu-service';
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  description?: string;
-  stock?: number;
+interface Product extends MenuItem {
+  quantity?: number;
 }
 
 export default function FoodHubPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredItems, setFilteredItems] = useState<Product[]>([]);
+  const [products, setProducts] = useState<MenuItem[]>([]);
+  const [filteredItems, setFilteredItems] = useState<MenuItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<string[]>(['All Items']);
   const { cart, addToCart } = useCart();
 
-  // Subscribe to Food products from Firebase
+  // Subscribe to Food menu items by category
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = subscribeToProductsByCategory('Food', (productsData) => {
+    const unsubscribe = subscribeToFoodByCategory('Pizzas', (productsData) => {
       setProducts(productsData);
       setFilteredItems(productsData);
       setLoading(false);
@@ -38,9 +34,17 @@ export default function FoodHubPage() {
     return () => unsubscribe();
   }, []);
 
+  // Update categories from products
+  useEffect(() => {
+    if (products.length > 0) {
+      const uniqueCategories = ['All Items', ...new Set(products.map((p) => p.category))];
+      setCategories(uniqueCategories);
+    }
+  }, [products]);
+
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category.toLowerCase());
-    if (category.toLowerCase() === 'all') {
+    if (category.toLowerCase() === 'all items') {
       setFilteredItems(products);
     } else {
       setFilteredItems(
@@ -49,12 +53,12 @@ export default function FoodHubPage() {
     }
   };
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: MenuItem) => {
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price,
-      discountedPrice: product.price,
+      price: product.price || 0,
+      discountedPrice: product.price || 0,
       image: product.image,
       category: product.category,
       quantity: 1,
@@ -68,7 +72,7 @@ export default function FoodHubPage() {
       <MarketplaceHeader
         title="What's on the <span>Menu Today?</span>"
         subtitle="Premium curated local flavors"
-        categories={['All Items', 'Burgers', 'Pizza', 'Sushi']}
+        categories={categories}
         onCategoryChange={handleCategoryChange}
         cartCount={cart.length}
       />
@@ -77,11 +81,11 @@ export default function FoodHubPage() {
       <main className="flex-grow max-w-[1440px] mx-auto px-6 sm:px-8 py-8 sm:py-12 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <p className="text-slate-600 font-medium">Loading products...</p>
+            <p className="text-slate-600 font-medium">Loading menu...</p>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-slate-600 text-lg">No products available</p>
+            <p className="text-slate-600 text-lg">No items available</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
@@ -90,7 +94,7 @@ export default function FoodHubPage() {
                 key={item.id}
                 id={parseInt(item.id) || 0}
                 name={item.name}
-                price={item.price}
+                price={item.price || 0}
                 image={item.image}
                 category={item.category}
                 onAddToCart={() => handleAddToCart(item)}

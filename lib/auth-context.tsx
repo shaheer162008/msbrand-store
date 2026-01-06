@@ -22,6 +22,36 @@ export interface Address {
   zipCode: string;
   phone: string;
   isDefault: boolean;
+  // Location coordinates for distance calculation
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface SellerProfile {
+  sellerId: string;
+  restaurantName: string;
+  cuisineType: string;
+  address: string;
+  city: string;
+  phone: string;
+  description: string;
+  logo?: string;
+  isActive: boolean;
+  // Location coordinates for distance calculation
+  latitude?: number;
+  longitude?: number;
+  registeredAt: number;
+  updatedAt: number;
+  // CNIC Verification
+  status: 'pending' | 'approved' | 'rejected';
+  cnic?: {
+    number: string;
+    frontImage: string; // base64 or URL
+    backImage: string; // base64 or URL
+    uploadedAt: number;
+  };
+  approvedAt?: number;
+  rejectionReason?: string;
 }
 
 export interface UserProfile {
@@ -29,10 +59,11 @@ export interface UserProfile {
   email: string;
   name: string;
   phone: string;
-  userType: 'client' | 'admin' | 'superadmin';
+  userType: 'client' | 'seller' | 'admin' | 'superadmin';
   emailVerified: boolean;
   addresses: Address[];
   profilePicture?: string;
+  sellerProfile?: SellerProfile;
   createdAt: number;
   updatedAt: number;
 }
@@ -51,7 +82,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   
   // Auth methods
-  signup: (email: string, password: string, name: string, userType: 'client' | 'admin', phone: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, userType: 'client' | 'seller' | 'admin', phone: string, sellerData?: SellerProfile) => Promise<void>;
   sendOTP: (email: string) => Promise<void>;
   verifyOTP: (email: string, otp: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
@@ -62,6 +93,9 @@ export interface AuthContextType {
   updateAddress: (addressId: string, address: Omit<Address, 'id'>) => Promise<void>;
   deleteAddress: (addressId: string) => Promise<void>;
   setDefaultAddress: (addressId: string) => Promise<void>;
+  
+  // Seller methods
+  updateSellerProfile: (sellerData: SellerProfile) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -105,8 +139,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email: string,
     password: string,
     name: string,
-    userType: 'client' | 'admin',
-    phone: string
+    userType: 'client' | 'seller' | 'admin',
+    phone: string,
+    sellerData?: SellerProfile
   ) => {
     try {
       // Check if user already exists
@@ -147,6 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name,
         userType,
         phone,
+        sellerData,
         createdAt: now,
       }));
 
@@ -233,12 +269,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userType: signupData.userType,
         emailVerified: true,
         addresses: [],
+        sellerProfile: signupData.sellerData,
         createdAt: now,
         updatedAt: now,
       };
 
       const userRef = ref(db, `users/${signupData.uid}`);
       await set(userRef, userProfile);
+
+      // If seller, also create seller entry for quick access
+      if (signupData.userType === 'seller' && signupData.sellerData) {
+        const sellerRef = ref(db, `sellers/${signupData.uid}`);
+        await set(sellerRef, signupData.sellerData);
+      }
 
       // Delete OTP
       await remove(otpRef);
@@ -412,6 +455,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Update seller profile
+  const updateSellerProfile = async (sellerData: SellerProfile) => {
+    if (!firebaseUser) throw new Error('User not authenticated');
+    if (!user) throw new Error('User profile not found');
+
+    try {
+      const updatedProfile = { ...user, sellerProfile: sellerData, updatedAt: Date.now() };
+      const userRef = ref(db, `users/${firebaseUser.uid}`);
+      await set(userRef, updatedProfile);
+
+      // Update seller entry for quick access
+      const sellerRef = ref(db, `sellers/${firebaseUser.uid}`);
+      await set(sellerRef, sellerData);
+
+      setUser(updatedProfile);
+      localStorage.setItem('user', JSON.stringify(updatedProfile));
+      console.log('Seller profile updated');
+    } catch (error) {
+      console.error('Error updating seller profile:', error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     user,
     firebaseUser,
@@ -426,6 +492,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateAddress,
     deleteAddress,
     setDefaultAddress,
+    updateSellerProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

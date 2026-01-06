@@ -1,0 +1,25 @@
+
+> msbrand-store@0.1.0 build
+> next build
+
+▲ Next.js 16.1.1 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./app/checkout/page.tsx:309:20
+Parsing ecmascript source code failed
+[0m [90m 307 |[39m                       [33m+[39m [33mAdd[39m [33mNew[39m [33mAddress[39m
+ [90m 308 |[39m                     [33m<[39m[33m/[39m[33mbutton[39m[33m>[39m
+[31m[1m>[22m[39m[90m 309 |[39m                   [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m     |[39m                    [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 310 |[39m                 ) [33m:[39m (
+ [90m 311 |[39m                   [33m<[39m[33mdiv[39m className[33m=[39m[32m"text-center py-8"[39m[33m>[39m
+ [90m 312 |[39m                     [33m<[39m[33mp[39m className[33m=[39m[32m"text-gray-600 mb-4"[39m[33m>[39m[33mNo[39m addresses saved[33m<[39m[33m/[39m[33mp[39m[33m>[39m[0m
+
+Unterminated regexp literal
+
+
+    at <unknown> (./app/checkout/page.tsx:309:20)

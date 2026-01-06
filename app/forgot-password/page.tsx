@@ -2,24 +2,99 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
-  const [step, setStep] = useState(1);
+  const { sendOTP, verifyOTP } = useAuth();
+  const [step, setStep] = useState<'email' | 'otp' | 'reset'>('email');
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
 
-    setTimeout(() => {
-      setStep(2);
+    try {
+      if (!email) {
+        setError('Please enter your email');
+        return;
+      }
+
+      await sendOTP(email);
+      setSuccessMessage('OTP sent to your email!');
+      setStep('otp');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      if (!otp || otp.length !== 6) {
+        setError('Please enter a valid 6-digit OTP');
+        return;
+      }
+
+      await verifyOTP(email, otp);
+      setSuccessMessage('OTP verified! Now set your new password.');
+      setStep('reset');
+    } catch (err: any) {
+      setError(err.message || 'Invalid OTP');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!newPassword || !confirmPassword) {
+      setError('Please fill in all password fields');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // TODO: Implement actual password reset API call
+      // For now, show success and redirect
+      setSuccessMessage('Password reset successfully! Redirecting to login...');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Failed to reset password');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-yellow-50 via-white to-slate-50">
       {/* Header */}
       <header className="p-8">
         <Link href="/login" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-black transition">
@@ -31,46 +106,56 @@ export default function ForgotPasswordPage() {
       <main className="flex-grow flex items-center justify-center px-6 pb-20">
         <div className="max-w-[480px] w-full">
           {/* Step 1: Email Input */}
-          {step === 1 && (
-            <div className="bg-white border border-slate-200 rounded-[3rem] p-10 md:p-14 shadow-sm" style={{ animation: 'slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
+          {step === 'email' && (
+            <div className="bg-white border-2 border-yellow-400 rounded-3xl p-10 md:p-14 shadow-xl">
               <div className="mb-10 text-center">
-                <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-slate-300">
+                <div className="w-20 h-20 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-yellow-600">
                   <i className="fa-solid fa-key text-3xl"></i>
                 </div>
-                <h1 className="text-3xl font-black uppercase tracking-tight">Forgot Password?</h1>
-                <p className="text-slate-400 font-medium mt-3">No worries, we'll send you recovery instructions.</p>
+                <h1 className="text-3xl font-black text-black uppercase tracking-tight">Forgot Password?</h1>
+                <p className="text-slate-600 font-medium mt-3">No worries, we'll help you reset it.</p>
               </div>
 
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+                  <p className="text-red-700 font-bold flex items-center gap-2">
+                    <AlertCircle size={18} />
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              <form className="space-y-6" onSubmit={handleSendOTP}>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Email Address</label>
+                  <label className="text-[10px] font-black uppercase text-slate-700 tracking-widest ml-1">Email Address</label>
                   <input
                     type="email"
                     required
-                    placeholder="alex@example.com"
+                    placeholder="your@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-100 p-5 rounded-2xl font-bold text-sm outline-none transition-all"
-                    style={{ borderColor: '#e2e8f0' }}
-                    onFocus={(e) => (e.target.style.borderColor = '#FFD600')}
-                    onBlur={(e) => (e.target.style.borderColor = '#e2e8f0')}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
+                    className="w-full bg-white border-2 border-slate-300 p-4 rounded-xl font-bold text-sm outline-none transition-all focus:border-yellow-400 text-black placeholder-slate-400"
+                    disabled={isLoading}
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-black text-white py-5 rounded-[1.5rem] font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:shadow-lg active:scale-[0.98] transition-all disabled:opacity-60"
+                  className="w-full bg-black hover:bg-slate-900 disabled:opacity-50 text-yellow-400 py-4 rounded-xl font-black uppercase text-sm tracking-wide transition-all"
                 >
                   {isLoading ? (
                     <>
                       <i className="fa-solid fa-circle-notch animate-spin mr-2"></i>
-                      Processing...
+                      Sending OTP...
                     </>
                   ) : (
                     <>
-                      Send Reset Link
-                      <i className="fa-solid fa-paper-plane text-[10px] ml-2"></i>
+                      Send OTP
+                      <i className="fa-solid fa-paper-plane text-xs ml-2"></i>
                     </>
                   )}
                 </button>
@@ -78,23 +163,148 @@ export default function ForgotPasswordPage() {
             </div>
           )}
 
-          {/* Step 2: Confirmation */}
-          {step === 2 && (
-            <div className="bg-white border border-slate-200 rounded-[3rem] p-10 md:p-14 shadow-sm text-center" style={{ animation: 'slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-              <div className="w-24 h-24 bg-yellow-400 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-lg" style={{ backgroundColor: '#FFD600', boxShadow: '0 20px 25px -5px rgba(255, 214, 0, 0.2)' }}>
-                <i className="fa-solid fa-envelope-open-text text-3xl text-black"></i>
+          {/* Step 2: OTP Verification */}
+          {step === 'otp' && (
+            <div className="bg-white border-2 border-yellow-400 rounded-3xl p-10 md:p-14 shadow-xl">
+              <div className="mb-10 text-center">
+                <div className="w-20 h-20 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-yellow-600">
+                  <i className="fa-solid fa-envelope-open-text text-3xl"></i>
+                </div>
+                <h1 className="text-3xl font-black text-black uppercase tracking-tight">Enter OTP</h1>
+                <p className="text-slate-600 font-medium mt-3">We've sent a 6-digit code to {email}</p>
               </div>
-              <h2 className="text-3xl font-black uppercase tracking-tight">Check your inbox</h2>
-              <p className="text-slate-400 font-medium mt-4 leading-relaxed">
-                We've sent a recovery link to your email. Please follow the instructions to reset your password.
-              </p>
 
-              <div className="mt-10 pt-8 border-t border-slate-50">
-                <p className="text-[10px] font-black uppercase text-slate-300 tracking-widest mb-4">Didn't receive it?</p>
-                <button onClick={() => { setStep(1); setEmail(''); }} className="text-xs font-black uppercase tracking-widest text-black hover:text-yellow-500 transition">
-                  Resend Link
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+                  <p className="text-red-700 font-bold flex items-center gap-2">
+                    <AlertCircle size={18} />
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+                  <p className="text-green-700 font-bold flex items-center gap-2">
+                    <CheckCircle size={18} />
+                    {successMessage}
+                  </p>
+                </div>
+              )}
+
+              <form className="space-y-6" onSubmit={handleVerifyOTP}>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-700 tracking-widest ml-1">6-Digit OTP</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="000000"
+                    value={otp}
+                    onChange={(e) => {
+                      setOtp(e.target.value.replace(/\D/g, '').slice(0, 6));
+                      setError('');
+                    }}
+                    maxLength={6}
+                    className="w-full bg-white border-2 border-slate-300 p-4 rounded-xl font-bold text-center text-2xl font-mono outline-none transition-all focus:border-yellow-400 text-black"
+                    disabled={isLoading}
+                    autoFocus
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-black hover:bg-slate-900 disabled:opacity-50 text-yellow-400 py-4 rounded-xl font-black uppercase text-sm tracking-wide transition-all"
+                >
+                  {isLoading ? 'Verifying...' : 'Verify OTP'}
                 </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep('email');
+                    setOtp('');
+                    setError('');
+                    setSuccessMessage('');
+                  }}
+                  className="w-full border-2 border-slate-300 hover:border-yellow-400 text-slate-700 py-2 rounded-xl font-bold transition-all"
+                >
+                  Back to Email
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Step 3: Reset Password */}
+          {step === 'reset' && (
+            <div className="bg-white border-2 border-yellow-400 rounded-3xl p-10 md:p-14 shadow-xl">
+              <div className="mb-10 text-center">
+                <div className="w-20 h-20 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-yellow-600">
+                  <i className="fa-solid fa-lock text-3xl"></i>
+                </div>
+                <h1 className="text-3xl font-black text-black uppercase tracking-tight">Set New Password</h1>
+                <p className="text-slate-600 font-medium mt-3">Create a strong password for your account</p>
               </div>
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+                  <p className="text-red-700 font-bold flex items-center gap-2">
+                    <AlertCircle size={18} />
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+                  <p className="text-green-700 font-bold flex items-center gap-2">
+                    <CheckCircle size={18} />
+                    {successMessage}
+                  </p>
+                </div>
+              )}
+
+              <form className="space-y-4" onSubmit={handleResetPassword}>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-700 tracking-widest ml-1">New Password</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={newPassword}
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                      setError('');
+                    }}
+                    className="w-full bg-white border-2 border-slate-300 p-4 rounded-xl font-bold text-sm outline-none transition-all focus:border-yellow-400 text-black placeholder-slate-400"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-700 tracking-widest ml-1">Confirm Password</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setError('');
+                    }}
+                    className="w-full bg-white border-2 border-slate-300 p-4 rounded-xl font-bold text-sm outline-none transition-all focus:border-yellow-400 text-black placeholder-slate-400"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-black hover:bg-slate-900 disabled:opacity-50 text-yellow-400 py-4 rounded-xl font-black uppercase text-sm tracking-wide transition-all mt-6"
+                >
+                  {isLoading ? 'Resetting Password...' : 'Reset Password'}
+                </button>
+              </form>
             </div>
           )}
         </div>

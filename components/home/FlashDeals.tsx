@@ -1,31 +1,46 @@
 'use client';
 
-import Link from 'next/link';
-import { Zap, Star, ShoppingCart } from 'lucide-react';
-import productsData from '@/lib/products.json';
+import { Zap, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useState } from 'react';
+import { useFlashDeals } from '@/lib/use-flash-deals';
 
 export default function FlashDeals() {
   const { addToCart } = useCart();
-  const [justAdded, setJustAdded] = useState<number | null>(null);
+  const { deals, loading } = useFlashDeals();
+  const [justAdded, setJustAdded] = useState<string | null>(null);
 
-  // Get flash deal products
-  const flashProducts = productsData.products.filter((p) => p.deals?.isFlashDeal).slice(0, 6);
-
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (deal: any) => {
     addToCart({
-      id: product.id.toString(),
-      name: product.name,
-      price: product.price,
-      discountedPrice: product.discountedPrice,
+      id: deal.itemId,
+      name: deal.itemName,
+      price: deal.price || Object.values(deal.sizes || {})[0],
+      discountedPrice: deal.price || Object.values(deal.sizes || {})[0],
       quantity: 1,
-      image: product.images[0],
-      category: product.category,
+      image: deal.image,
+      category: 'Flash Deal',
     });
-    setJustAdded(product.id);
+    setJustAdded(deal.id);
     setTimeout(() => setJustAdded(null), 1500);
   };
+
+  if (loading) {
+    return (
+      <section className="py-12 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-8">
+            <Zap className="text-yellow-400 w-7 h-7" />
+            <h2 className="text-3xl lg:text-4xl font-black text-black">Flash Deals</h2>
+          </div>
+          <div className="text-center text-gray-600">Loading flash deals...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!deals || deals.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-12 bg-white">
@@ -38,27 +53,24 @@ export default function FlashDeals() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {flashProducts.map((product) => {
-            const discount = product.discountedPrice ? Math.round(
-              ((product.price - product.discountedPrice) / product.price) * 100
-            ) : 0;
-
+          {deals.map((deal) => {
+            const price = deal.price || (deal.sizes ? Object.values(deal.sizes)[0] : 0);
+            
             return (
-              <Link
-                key={product.id}
-                href={`/product/${product.id}`}
+              <div
+                key={deal.id}
                 className="bg-white border-2 border-yellow-400 rounded-lg overflow-hidden hover:shadow-lg transition-all group"
               >
                 {/* Image */}
                 <div className="relative bg-gray-100 h-32 sm:h-40 overflow-hidden">
                   <img
-                    src={product.images[0]}
-                    alt={product.name}
+                    src={deal.image}
+                    alt={deal.itemName}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-                  {discount > 0 && (
+                  {deal.discount && (
                     <div className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 rounded font-bold text-xs">
-                      -{discount}%
+                      -{deal.discount}%
                     </div>
                   )}
                 </div>
@@ -66,49 +78,31 @@ export default function FlashDeals() {
                 {/* Content */}
                 <div className="p-2 sm:p-3">
                   <h3 className="text-xs sm:text-sm font-bold text-black line-clamp-2 mb-2">
-                    {product.name}
+                    {deal.itemName}
                   </h3>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-2">
-                    <span className="text-yellow-400 text-xs">★</span>
-                    <span className="text-xs font-bold text-black">{product.rating}</span>
-                  </div>
-
                   {/* Price */}
-                  <p className="text-yellow-400 font-black text-sm">Rs {product.discountedPrice}</p>
-                  {product.price !== product.discountedPrice && (
-                    <p className="text-gray-400 line-through text-xs">Rs {product.price}</p>
-                  )}
+                  <p className="text-yellow-400 font-black text-sm">Rs {price}</p>
 
                   {/* Button */}
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      handleAddToCart(product);
+                      handleAddToCart(deal);
                     }}
-                    className={`w-full font-bold text-xs py-1.5 rounded mt-2 transition-all ${
-                      justAdded === product.id
+                    className={`w-full font-bold text-xs py-1.5 rounded mt-2 transition-all flex items-center justify-center gap-1 ${
+                      justAdded === deal.id
                         ? 'bg-green-500 text-white'
                         : 'bg-yellow-400 hover:bg-yellow-500 text-black'
                     }`}
                   >
-                    {justAdded === product.id ? '✓' : 'Add'}
+                    <ShoppingCart size={12} />
+                    {justAdded === deal.id ? '✓' : 'Add'}
                   </button>
                 </div>
-              </Link>
+              </div>
             );
           })}
-        </div>
-
-        {/* View All */}
-        <div className="text-center mt-8">
-          <Link
-            href="/food-hub"
-            className="inline-block bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-bold transition-all text-sm sm:text-base"
-          >
-            View All Products →
-          </Link>
         </div>
       </div>
     </section>
